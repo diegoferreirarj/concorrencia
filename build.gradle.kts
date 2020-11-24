@@ -13,6 +13,8 @@ repositories {
 dependencies {
     implementation(kotlin("stdlib"))
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.1")
+    implementation("io.projectreactor:reactor-core:3.4.0")
+    implementation("io.projectreactor.kotlin:reactor-kotlin-extensions:3.4.0")
 }
 
 application {

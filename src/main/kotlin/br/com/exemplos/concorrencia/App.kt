@@ -3,13 +3,17 @@ package br.com.exemplos.concorrencia
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 import java.util.concurrent.CountDownLatch
 import kotlin.concurrent.thread
 import kotlin.system.measureTimeMillis
 
+
 fun main() {
+    reactive()
     criandoCorrotinas()
-    criandoThreads()
+    criandoThreadsJava()
 }
 
 fun criandoCorrotinas() {
@@ -27,10 +31,10 @@ fun criandoCorrotinas() {
         }
     }
 
-    println("$time milisegundos para concluir ${contador / 2} tarefas")
+    println("$time milissegundos para concluir ${contador / 2} tarefas usando Coroutines")
 }
 
-fun criandoThreads() {
+fun criandoThreadsJava() {
     val inicio = System.currentTimeMillis()
     val latch = CountDownLatch(100)
     var contador = 0
@@ -48,5 +52,18 @@ fun criandoThreads() {
 
     latch.await()
 
-    println("${System.currentTimeMillis() - inicio} milisegundos para concluir ${contador / 2} tarefas")
+    println("${System.currentTimeMillis() - inicio} milisegundos para concluir ${contador / 2} tarefas usando Threads")
+}
+
+fun reactive() {
+    Mono.just("10a")
+            .map { it.toInt() }
+            .onErrorReturn(30)
+            .subscribe { println("Mono: $it") }
+
+    Flux.range(0, 10)
+            .filter { it % 2 == 0 }
+            .map { it * 10 }
+            .doAfterTerminate { println("Acabou") }
+            .subscribe { println("Flux: $it") }
 }
