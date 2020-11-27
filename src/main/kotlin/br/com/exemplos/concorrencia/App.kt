@@ -32,7 +32,7 @@ fun criandoCorrotinas() {
         }
     }
 
-    println("$time milissegundos para concluir ${contador / 2} tarefas usando Coroutines")
+    println("${time}ms para concluir ${contador / 2} tarefas usando Coroutines")
 }
 
 fun criandoThreadsJava() {
