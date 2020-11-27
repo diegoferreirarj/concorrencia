@@ -6,6 +6,7 @@ import kotlinx.coroutines.runBlocking
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.util.concurrent.CountDownLatch
+import java.util.concurrent.atomic.AtomicInteger
 import kotlin.concurrent.thread
 import kotlin.system.measureTimeMillis
 
@@ -36,23 +37,21 @@ fun criandoCorrotinas() {
 
 fun criandoThreadsJava() {
     val inicio = System.currentTimeMillis()
-    val latch = CountDownLatch(100)
-    var contador = 0
+    val latch = CountDownLatch(100_000)
+    var contador = AtomicInteger()
 
-    for (i in 1..100) {
+    for (i in 1..100_000) {
         thread(start = true) {
-            synchronized(latch) {
-                contador++
-                Thread.sleep(100)
-                contador++
-                latch.countDown()
-            }
+            contador.incrementAndGet()
+            Thread.sleep(100)
+            contador.incrementAndGet()
+            latch.countDown()
         }
     }
 
     latch.await()
 
-    println("${System.currentTimeMillis() - inicio} milisegundos para concluir ${contador / 2} tarefas usando Threads")
+    println("${System.currentTimeMillis() - inicio}ms para concluir ${contador.get() / 2} tarefas usando Threads")
 }
 
 fun reactive() {
